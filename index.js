@@ -1,16 +1,19 @@
 const express = require("express");
+const { use } = require("express/lib/application");
+const cors = require('cors')
 
 const PORT = 1234;
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors)
 
 app.get("/hello", (req, res) => {
     console.log(req.query);
     res.send("Hello world");
 });
-``
+
 const testController = (req, res) => {
     const { loanTerm, loanAmount, interestRate } = req.body;
 
@@ -36,12 +39,12 @@ const testController = (req, res) => {
 
 // /calculate-mortgage endpoint
 
-function numberWithCommas(x) {
+//function numberWithCommas(x) {
 
-    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+//  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
 
-};
+//};
 
 const calculateMortgage = (req, res) => {
     // do your mortgage calculations here
@@ -67,10 +70,10 @@ const calculateMortgage = (req, res) => {
     //the output that will be displayed
     try {
         const response = {
-            "Monthly Payment": numberWithCommas(`$${Math.ceil((monthlyPayment))}`),
-            "Total Payment": numberWithCommas(`$${Math.ceil((monthlyPayment * loanMonths))}`),
-            "Total Interest": numberWithCommas(`$${Math.ceil(((monthlyPayment * loanMonths) - loanAmount))}`),
-            "Annual Payment": numberWithCommas(`$${Math.ceil((monthlyPayment * 12))}`),
+            "Monthly Payment": Math.ceil((monthlyPayment)),
+            "Total Payment": Math.ceil((monthlyPayment * loanMonths)),
+            "Total Interest": Math.ceil(((monthlyPayment * loanMonths) - loanAmount)),
+            "Annual Payment": Math.ceil((monthlyPayment * 12)),
 
         };
 

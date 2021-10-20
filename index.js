@@ -22,7 +22,6 @@ const testController = (req, res) => {
         res.status(400);
         res.send("Parameters missing!");
     }
-
     try {
         const responseData = {
             loanMonths: loanTerm * 12,
@@ -36,14 +35,9 @@ const testController = (req, res) => {
     }
 }
 
-
-// /calculate-mortgage endpoint
-
+// //calculate-mortgage endpoint
 //function numberWithCommas(x) {
-
 //  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-
-
 //};
 
 const calculateMortgage = (req, res) => {
@@ -66,7 +60,6 @@ const calculateMortgage = (req, res) => {
     const calcOne = 1 - Math.pow(interestRatePlusOne, - loanMonths);
     const calcTwo = interestRateDecimal / calcOne;
     const monthlyPayment = calcTwo * loanAmount;
-
     //the output that will be displayed
     try {
         const response = {
@@ -74,23 +67,18 @@ const calculateMortgage = (req, res) => {
             "Total Payment": Math.ceil((monthlyPayment * loanMonths)),
             "Total Interest": Math.ceil(((monthlyPayment * loanMonths) - loanAmount)),
             "Annual Payment": Math.ceil((monthlyPayment * 12)),
-
-        };
-
+        }
         res.send(response);
     } catch (e) {
         res.status(500);
         res.send(e.message);
-
-    }
-
+    };
 };
 
 
 app.post("/test", testController);
 
 app.post("/calculate-mortgage", calculateMortgage);
-
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port: ${PORT}`)

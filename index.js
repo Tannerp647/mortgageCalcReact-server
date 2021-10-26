@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors)
+app.use(cors());
 
 app.get("/hello", (req, res) => {
     console.log(req.query);
@@ -35,19 +35,16 @@ const testController = (req, res) => {
     }
 }
 
-// //calculate-mortgage endpoint
-//function numberWithCommas(x) {
-//  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-//};
-
 const calculateMortgage = (req, res) => {
     // do your mortgage calculations here
+    console.log(req.body);
     const { loanTerm, loanAmount, interestRate } = req.body;
+
     //make sure that there is a value 
-    if (!loanTerm || !loanAmount || !interestRate) {
-        res.status(400);
-        res.send("Missing entry")
-    };
+    // if (!loanTerm || !loanAmount || !interestRate) {
+    //     res.status(400);
+    //     res.send("missing entry")
+    // };
     // make sure that they are numbers
     if (typeof loanTerm != "number" || typeof loanAmount != "number" || typeof interestRate != "number") {
         res.status(400);
@@ -60,13 +57,31 @@ const calculateMortgage = (req, res) => {
     const calcOne = 1 - Math.pow(interestRatePlusOne, - loanMonths);
     const calcTwo = interestRateDecimal / calcOne;
     const monthlyPayment = calcTwo * loanAmount;
+    const annualPayment = loanAmount / loanTerm;
+    const zero = 0;
+    //in case someone has a 0 percent interest rate.
+    if (loanAmount && interestRate === 0 && loanTerm)
+        try {
+            const response = {
+                "monthlyPayment": Math.ceil(annualPayment / 12),
+                "totalPayment": Math.ceil(loanAmount),
+                "totalInterest": 0,
+                "annualPayment": Math.ceil(loanAmount / loanTerm),
+            }
+            res.send(response);
+        } catch (e) {
+            res.status(500);
+            res.send(e.message);
+        };
+
     //the output that will be displayed
+
     try {
         const response = {
-            "Monthly Payment": Math.ceil((monthlyPayment)),
-            "Total Payment": Math.ceil((monthlyPayment * loanMonths)),
-            "Total Interest": Math.ceil(((monthlyPayment * loanMonths) - loanAmount)),
-            "Annual Payment": Math.ceil((monthlyPayment * 12)),
+            "monthlyPayment": Math.ceil((monthlyPayment)),
+            "totalPayment": Math.ceil((monthlyPayment * loanMonths)),
+            "totalInterest": Math.ceil(((monthlyPayment * loanMonths) - loanAmount)),
+            "annualPayment": Math.ceil((monthlyPayment * 12)),
         }
         res.send(response);
     } catch (e) {

@@ -33,7 +33,7 @@ const testController = (req, res) => {
         res.status(500);
         res.send(e.message)
     }
-}
+};
 
 const calculateMortgage = (req, res) => {
     // do your mortgage calculations here
@@ -45,6 +45,7 @@ const calculateMortgage = (req, res) => {
     //     res.status(400);
     //     res.send("missing entry")
     // };
+
     // make sure that they are numbers
     if (typeof loanTerm != "number" || typeof loanAmount != "number" || typeof interestRate != "number") {
         res.status(400);
@@ -58,15 +59,15 @@ const calculateMortgage = (req, res) => {
     const calcTwo = interestRateDecimal / calcOne;
     const monthlyPayment = calcTwo * loanAmount;
     const annualPayment = loanAmount / loanTerm;
-    const zero = 0;
+
     //in case someone has a 0 percent interest rate.
     if (loanAmount && interestRate === 0 && loanTerm)
         try {
             const response = {
-                "monthlyPayment": Math.ceil(annualPayment / 12),
-                "totalPayment": Math.ceil(loanAmount),
+                "monthlyPayment": (annualPayment / 12),
+                "totalPayment": (loanAmount),
                 "totalInterest": 0,
-                "annualPayment": Math.ceil(loanAmount / loanTerm),
+                "annualPayment": (loanAmount / loanTerm),
             }
             res.send(response);
         } catch (e) {
@@ -78,10 +79,10 @@ const calculateMortgage = (req, res) => {
 
     try {
         const response = {
-            "monthlyPayment": Math.ceil((monthlyPayment)),
-            "totalPayment": Math.ceil((monthlyPayment * loanMonths)),
-            "totalInterest": Math.ceil(((monthlyPayment * loanMonths) - loanAmount)),
-            "annualPayment": Math.ceil((monthlyPayment * 12)),
+            "monthlyPayment": (monthlyPayment),
+            "totalPayment": (monthlyPayment * loanMonths),
+            "totalInterest": ((monthlyPayment * loanMonths) - loanAmount),
+            "annualPayment": (monthlyPayment * 12),
         }
         res.send(response);
     } catch (e) {
